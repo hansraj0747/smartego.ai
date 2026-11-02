@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Generate starter coding projects with smartEGO AI Project Creator"><title>smartEGO AI Project Creator</title><link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}"></head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <a class="brand" href="/"><span class="logo">✦</span><span><b>smartEGO AI</b><small>PROJECT CREATOR</small></span></a>
+  <p class="label">STARTER TEMPLATES</p>
+  {% for key, item in templates.items() %}
+  <button class="template" data-template="{{ key }}"><span class="template-icon">{% if key == 'portfolio' %}◈{% elif key == 'todo' %}☑{% elif key == 'python_calculator' %}ƒx{% elif key == 'java_login' %}☕{% else %}▦{% endif %}</span><span><b>{{ item.label }}</b><small>{{ item.language }}</small></span></button>
+  {% endfor %}
+  <div class="side-foot"><span class="dot"></span><span id="api-status">Checking AI status…</span></div>
+</aside>
+<main class="main">
+  <header class="topbar"><span class="mobile-brand">✦ smartEGO AI</span><span class="pill">● AI PROJECT BUILDER</span><div class="account-tools"><span id="account-email"></span><button id="logout" type="button">Logout</button></div></header>
+  <section class="hero"><p class="eyebrow">FROM IDEA TO SOURCE CODE</p><h1>What do you want<br><span>to build today?</span></h1><p>Describe your idea in English, Hindi, Hinglish, or another language. Build frontend + backend code, inspect files, get a project report and structure diagram, and download a ZIP.</p></section>
+  <section class="builder">
+    <form id="generate-form">
+      <label for="prompt">Describe your project</label>
+      <textarea id="prompt" maxlength="4000" placeholder="Example: Build a student management website with add, edit, search, and delete features…" required></textarea>
+      <div class="controls">
+        <div class="field"><label for="template">Starter template</label><select id="template">{% for key, item in templates.items() %}<option value="{{ key }}">{{ item.label }}</option>{% endfor %}</select></div>
+        <div class="field"><label for="language">Technology</label><select id="language"><option>HTML, CSS, JavaScript</option><option>Python</option><option>Python Flask + SQLite</option><option>Java</option><option>Java + MySQL</option><option>Android Studio + Java</option></select></div>
+      </div>
+      <label class="toggle"><input type="checkbox" id="use-ai" checked><span><b>Use AI generation</b><small>Understands multilingual ideas. Custom full-stack code requires a supported AI API key; otherwise a built-in template is used.</small></span></label>
+      <button class="primary" id="generate" type="submit"><span>✦</span> Generate project <span class="arrow">→</span></button>
+    </form>
+    <p class="safe-note">✦ Generated code is a starting point. Review it before running or deploying.</p>
+  </section>
+  <section id="code-solver" class="code-solver"><p class="eyebrow">DEBUG · EXPLAIN · IMPROVE</p><h2>AI Code Problem Solver</h2><p>Paste code to debug, explain, optimize, or solve a coding problem. Your code is sent to the configured AI provider and is not executed by this server.</p><div class="controls"><div class="field"><label for="solver-language">Language</label><select id="solver-language"><option>Python</option><option>Java</option><option>JavaScript</option><option>TypeScript</option><option>C</option><option>C++</option><option>C#</option><option>PHP</option><option>Go</option><option>Rust</option><option>Kotlin</option><option>Swift</option><option>SQL</option><option>HTML/CSS</option><option>Ruby</option><option>Other</option></select></div><div class="field"><label for="solver-task">Task</label><select id="solver-task"><option value="debug">Find and fix errors</option><option value="explain">Explain code</option><option value="optimize">Improve / optimize</option><option value="solve">Solve coding problem</option></select></div></div><label for="solver-description">Error message / problem description</label><textarea id="solver-description" maxlength="3000" placeholder="What error do you see? What should happen?"></textarea><label for="solver-code">Your code</label><textarea id="solver-code" maxlength="30000" spellcheck="false" placeholder="Paste code here…"></textarea><button id="solve-code" class="primary" type="button">✦ Analyze and solve code</button><p id="solver-status" role="status"></p><div id="solver-result" hidden><h3>Result</h3><p id="solver-summary"></p><h4>Potential issues</h4><ul id="solver-issues"></ul><h4>Suggested corrected code</h4><div class="code-area"><div class="code-top"><span id="solver-code-label">Fixed code</span><button id="copy-fixed-code" type="button">Copy code</button></div><pre><code id="fixed-code"></code></pre></div><h4>Recommended steps</h4><ol id="solver-steps"></ol><h4>Suggested tests</h4><ul id="solver-tests"></ul><p class="safe-note" id="solver-note"></p></div></section><section class="image-maker">
+    <div><p class="eyebrow">VISUAL CREATOR</p><h2>Create a picture</h2><p>Describe any illustration, logo concept, app mockup, or project visual. Image API configuration is required.</p></div>
+    <textarea id="image-prompt" maxlength="2000" placeholder="Example: A futuristic student dashboard illustration with purple and blue gradients…"></textarea>
+    <button id="make-image" class="primary" type="button">✦ Generate picture</button>
+    <p id="image-status" role="status"></p>
+    <img id="generated-image" alt="AI-generated image preview" hidden>
+  </section>
+  <section id="result" class="result" hidden>
+    <div class="result-head"><div><p class="eyebrow">YOUR PROJECT</p><h2 id="project-name">Generated project</h2><p id="result-note"></p></div><a id="download" class="download" href="#">↓ Download ZIP</a></div>
+    <div class="file-layout"><nav id="file-list" class="file-list" aria-label="Generated files"></nav><div class="code-area"><div class="code-top"><span id="current-file">Select a file</span><button id="copy" type="button">Copy code</button></div><pre><code id="file-content">Generated source code will appear here.</code></pre></div></div>
+  </section>
+  <section id="chat" class="chat-panel"><p class="eyebrow">YOUR PRIVATE ASSISTANT</p><h2>AI Chatbot & History</h2><p>Messages are saved to your account. Recent conversation context is used for replies.</p><div id="chat-history" class="chat-history" aria-live="polite"></div><form id="chat-form" enctype="multipart/form-data"><label for="chat-message">Ask smartEGO AI</label><textarea id="chat-message" maxlength="8000" placeholder="Ask about your project, code, or debugging…"></textarea><div class="chat-attachments"><label class="attach-button" for="chat-files">＋ Upload photo / document / voice file</label><input id="chat-files" name="attachments" type="file" multiple accept="image/png,image/jpeg,image/webp,image/gif,.pdf,.docx,.txt,.md,.csv,.json,.py,.java,.js,.ts,.html,.css,.xml,.yml,.yaml,.log,.sql,.php,.c,.cpp,.h,audio/*,.mp3,.wav,.m4a,.webm,.ogg,.flac"><small>Up to 5 files; each up to 10 MB. Supported: images, PDF/DOCX/text/code, and audio.</small><div id="chat-file-list" class="chat-file-list"></div><button id="record-voice" class="voice-button" type="button">🎙 Record voice (browser support required)</button><span id="voice-status" role="status"></span></div><button class="primary" id="chat-send" type="submit">Send message</button><p id="chat-status" role="status"></p></form></section>
+
+<section id="assistant-manager" class="assistant-manager">
+  <p class="eyebrow">PLAN · ORGANIZE · BUILD</p>
+  <h2>AI Assistant Manager</h2>
+  <p>Ask for project guidance and keep a private task list for your account.</p>
+  <div class="manager-grid">
+    <div class="manager-card">
+      <h3>Ask your assistant</h3>
+      <textarea id="manager-message" maxlength="5000" placeholder="Example: Make a step-by-step plan for my Java login project"></textarea>
+      <button id="manager-ask" class="primary" type="button">Ask AI Assistant</button>
+      <p id="manager-answer-status" role="status"></p>
+      <pre id="manager-answer" class="manager-answer" hidden></pre>
+    </div>
+    <div class="manager-card">
+      <h3>My tasks</h3>
+      <form id="manager-task-form">
+        <label for="manager-task-title">Task title</label>
+        <input id="manager-task-title" maxlength="180" required placeholder="e.g. Build registration page">
+        <label for="manager-task-details">Details (optional)</label>
+        <textarea id="manager-task-details" maxlength="2000" placeholder="Add notes or acceptance criteria"></textarea>
+        <button class="primary" type="submit">+ Add task</button>
+      </form>
+      <p id="manager-task-status" role="status"></p>
+      <div id="manager-task-list" class="manager-task-list"></div>
+    </div>
+  </div>
+</section>
+
+  <footer>smartEGO AI · Private account workspace · Keep API keys private</footer>
+</main>
+</div>
+<script src="{{ url_for('static',filename='script.js') }}"></script>
+</body></html>
