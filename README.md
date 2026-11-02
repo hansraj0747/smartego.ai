@@ -1,0 +1,1 @@
+# smartego.ai
